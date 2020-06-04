@@ -10,6 +10,7 @@ public class HttpReq{
     private HttpParser.ParserSettings settings = null;
     private ByteBuffer body = null;
     private String szURL = null;
+    public  long time = 0;
 
     public HttpReq(Connection conn, Delegate delegate){
         this.parser = new HttpParser(HttpParser.HTTP_REQUEST);

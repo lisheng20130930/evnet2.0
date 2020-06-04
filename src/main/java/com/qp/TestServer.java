@@ -41,21 +41,16 @@ public class TestServer extends Thttpd {
         business(pRsp,pReq);
     }
 
-    @Override
-    public void onSendComplete(Connection conn){
-        super.onSendComplete(conn);
-        Logger.log("Response Completed handled");
-    }
-
     public void onReqCompleted(HttpReq req) {
         String szRsp = JSON.toJSONString((Map)req.getUsr());
-        String str = String.format("HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s",szRsp.length(),szRsp);
+        String str = String.format("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %d\r\n\r\n%s",szRsp.getBytes().length,szRsp);
         boolean r = req.getConn().sendBuffer(str.getBytes());
         req.setUsr(null);
+        long used = System.currentTimeMillis()-req.time;
         if(r){
-            Logger.log("Response send called...");
+            Logger.log("req send called,used-time="+used);
         }else{
-            Logger.log("req send error");
+            Logger.log("req send error,used-time="+used);
         }
     }
 
@@ -73,6 +68,12 @@ public class TestServer extends Thttpd {
                 doBusiness((HttpReq)usr);
             }
         },req);
+    }
+
+    @Override
+    public void onSendComplete(Connection conn){
+        super.onSendComplete(conn);
+        Logger.log("Response Completed handled");
     }
 
     public static void main(String[] args){

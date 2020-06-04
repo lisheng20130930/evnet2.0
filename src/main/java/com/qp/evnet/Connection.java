@@ -1,7 +1,6 @@
 package com.qp.evnet;
 
 import com.qp.utils.Logger;
-import sun.rmi.runtime.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
@@ -74,7 +73,7 @@ public class Connection implements Observer{
         if(buffer.position()==buffer.limit()){
             sendQueue.remove(0);
         }
-
+        Logger.log("[Conn]"+buffer.limit()+"bytes send complete....");
         this.handler.onSendComplete(this);
         loop.setTimer(iID,TIMEOUT,null,this);
         if(sendQueue.size()==0){
