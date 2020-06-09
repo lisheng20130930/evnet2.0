@@ -59,6 +59,7 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
 
     public void onClosing(Connection conn, int code) {
         Logger.log("Conn("+conn.iID+") on Closing.. code"+code);
+        conn.clear();
         clients.remove(conn.socket);
     }
 

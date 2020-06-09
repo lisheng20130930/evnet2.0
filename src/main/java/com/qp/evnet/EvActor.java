@@ -9,6 +9,11 @@ public abstract class EvActor implements Runnable{
         this.usr = usr;
     }
 
+    public void clear(){
+        this.tcb = null;
+        this.usr = null;
+    }
+
     public interface TCB extends Observer{
         void run(Object usr);
     }

@@ -12,6 +12,11 @@ public class Timer{
         this.usr = usr;
     }
 
+    public void clear(){
+        this.handler = null;
+        this.usr = null;
+    }
+
     public void addMillisecondsToNow(long milliseconds){
         this.when_ms = System.currentTimeMillis()+milliseconds;
     }

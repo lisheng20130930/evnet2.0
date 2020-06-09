@@ -60,6 +60,7 @@ public class EventLoop {
                     }
                 }
             }
+            fireds.clear();
         }catch (Exception e){
             Logger.log(e.getMessage());
         }
@@ -93,11 +94,13 @@ public class EventLoop {
         while(tmp.size()>0){
             EvActor actor = tmp.remove(0);
             actor.tcb.handle(actor.usr,0);
+            actor.clear();
             processed ++;
         }
         if(processed>0) {
             Logger.log("[EventLoop]==>" + processed + " Actor handled...");
         }
+        tmp.clear();
     }
 
     public void processEvents(){
@@ -174,6 +177,7 @@ public class EventLoop {
         }
 
         if(event.mask == 0){
+            event.clear();
             events.remove(socket);
         }
     }
@@ -209,6 +213,7 @@ public class EventLoop {
             }
             timer.handler.handle(timer.usr,0);
         }
+        fireds.clear();
         return processed;
     }
 
@@ -222,6 +227,9 @@ public class EventLoop {
     }
 
     public void killTimer(long timerID){
-        timers.remove(timerID);
+        Timer timer = timers.remove(timerID);
+        if(timer!=null){
+            timer.clear();
+        }
     }
 }

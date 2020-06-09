@@ -97,6 +97,15 @@ public class HttpReq{
         return szURL;
     }
 
+    public void clear(){
+        this.delegate = null;
+        this.conn = null;
+        this.parser = null;
+        this.settings = null;
+        this.usr = null;
+        this.body = null;
+    }
+
     public interface Delegate{
         void ReqReady(HttpReq req);
     }

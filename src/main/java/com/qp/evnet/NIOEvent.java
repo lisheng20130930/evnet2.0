@@ -19,6 +19,14 @@ public class NIOEvent {
         this.usr = usr;
     }
 
+    public void clear(){
+        this.acceptHandler = null;
+        this.readHandler = null;
+        this.writeHandler = null;
+        this.usr = null;
+        this.socket = null;
+    }
+
     public Object getUsr() {
         return usr;
     }

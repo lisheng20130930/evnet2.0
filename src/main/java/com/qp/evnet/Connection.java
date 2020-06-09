@@ -56,6 +56,7 @@ public class Connection implements Observer{
         buffer.flip();
         loop.setTimer(iID,TIMEOUT,null,this);
         handler.processBuffer(this,buffer);
+        buffer.clear();
     }
 
     public void onWriteAble() {
@@ -72,8 +73,9 @@ public class Connection implements Observer{
         }
         if(buffer.position()==buffer.limit()){
             sendQueue.remove(0);
+            buffer.clear();
         }
-        Logger.log("[Conn]"+buffer.limit()+"bytes send complete....");
+        Logger.log("[Conn]"+r+"bytes send complete....");
         this.handler.onSendComplete(this);
         loop.setTimer(iID,TIMEOUT,null,this);
         if(sendQueue.size()==0){
@@ -125,6 +127,13 @@ public class Connection implements Observer{
             }
             socket = null;
         }
+    }
+
+    public void clear(){
+        this.loop = null;
+        this.handler = null;
+        this.sendQueue = null;
+        this.usr = null;
     }
 
     public interface Handler {
