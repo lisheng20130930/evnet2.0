@@ -10,16 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Delegate{
-    protected static final int N_THREAD = 2;
+    protected final int MAX_CNN = 8000; /* max conn count */
     protected Map<SelectableChannel, Connection> clients = null;
     protected ServerSocketChannel acceptor = null;
     protected EventLoop loop = null;
     private int counter = 0;
     protected int port = 0;
+    private int num = 0;
 
-    public Thttpd(int timeout, int port){
+    public Thttpd(int thread, int timeout, int port){
         clients = new HashMap<SelectableChannel,Connection>();
-        this.loop = new EventLoop(N_THREAD,timeout);
+        this.loop = new EventLoop(Math.max(1,thread),timeout);
         this.port = port;
     }
 
@@ -33,7 +34,8 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         socket.configureBlocking(false);
         conn = new Connection(loop,socket,this);
         clients.put(socket,conn);
-        Logger.log("Conn("+conn.iID+") accepted success");
+        num++;
+        Logger.log("Conn("+conn.iID+") accepted, num="+num+" success");
     }
 
     public void ReqReady(HttpReq req) {
@@ -58,9 +60,10 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
     }
 
     public void onClosing(Connection conn, int code) {
-        Logger.log("Conn("+conn.iID+") on Closing.. code"+code);
         conn.clear();
         clients.remove(conn.socket);
+        num--;
+        Logger.log("Conn("+conn.iID+") on Closing, num="+num+", code="+code);
     }
 
     public void onSendComplete(Connection conn){
@@ -70,6 +73,11 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
     public void handle(Object usr, int mask) {
         try {
             SelectableChannel client = acceptor.accept();
+            if(num >= MAX_CNN){
+                Logger.log("Error: conn out of balance, num="+num);
+                client.close();
+                return;
+            }
             onAccepted(client);
         } catch (Exception e) {
             Logger.log(e.getMessage());

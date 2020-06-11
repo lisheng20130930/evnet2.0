@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestServer extends Thttpd {
-    public TestServer(int timeout, int port) {
-        super(timeout, port);
+    public TestServer(int thread, int timeout, int port) {
+        super(thread, timeout, port);
     }
 
     private void business(Map<String,Object> pRsp, JSONObject pReq){
@@ -32,6 +32,7 @@ public class TestServer extends Thttpd {
         try {
             pReq = JSON.parseObject(strReq);
         }catch (Exception e){
+            Logger.log(e.getMessage());
         }
         if(pReq==null){
             pRsp.put("code",700);
@@ -64,8 +65,9 @@ public class TestServer extends Thttpd {
                 onReqCompleted((HttpReq)usr);
             }
             @Override
-            public void run(Object usr) {
+            public boolean run(Object usr) {
                 doBusiness((HttpReq)usr);
+                return true;
             }
         },req);
     }
@@ -78,7 +80,7 @@ public class TestServer extends Thttpd {
 
     public static void main(String[] args){
         try {
-            new TestServer(50000,58000).run();
+            new TestServer(4, 50000,58000).run();
         }catch (Exception e){
             e.printStackTrace();
         }
