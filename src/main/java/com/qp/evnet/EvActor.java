@@ -14,7 +14,10 @@ public abstract class EvActor implements Runnable{
         this.usr = null;
     }
 
-    public interface TCB extends Observer{
-        void run(Object usr);
+    public static abstract class TCB implements Observer{
+        public void handle(Object usr, int mask){
+
+        }
+        public abstract boolean run(Object usr);
     }
 }

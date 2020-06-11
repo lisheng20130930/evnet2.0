@@ -185,11 +185,13 @@ public class EventLoop {
     public void actorAdd(EvActor.TCB tcb, Object usr) {
         pool.submit(new EvActor(tcb,usr) {
             public void run() {
-                tcb.run(usr);
-                synchronized(finished) {
-                    finished.add(this);
+                boolean r = tcb.run(usr);
+                if(r){
+                    synchronized(finished) {
+                        finished.add(this);
+                    }
+                    async();
                 }
-                async();
             }
         });
     }
