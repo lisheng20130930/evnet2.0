@@ -14,7 +14,6 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
     protected Map<SelectableChannel, Connection> clients = null;
     protected ServerSocketChannel acceptor = null;
     protected EventLoop loop = null;
-    private int counter = 0;
     protected int port = 0;
     private int num = 0;
 
@@ -27,7 +26,7 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
     private void onAccepted(SelectableChannel socket) throws Exception{
         Connection conn = clients.get(socket);
         if(conn != null){
-            Logger.log("Error!!!!! socket has connection!");
+            Logger.log("[THttpD] Error!!!!! socket has connection!");
             socket.close();
             return;
         }
@@ -35,19 +34,18 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         conn = new Connection(loop,socket,this);
         clients.put(socket,conn);
         num++;
-        Logger.log("Conn("+conn.iID+") accepted, num="+num+" success");
+        Logger.log("[THttpD] Conn("+conn.iID+") accepted, num="+num+" success");
     }
 
     public void ReqReady(HttpReq req) {
-        counter++;
-        Logger.log("Request("+counter+") parsed Ready...szURL="+req.getURL());
+        Logger.log("[THttpD] req("+req.iID+") parsed ready, szURL="+req.getURL()+",bodySize="+req.getBody().limit());
         Connection conn = req.getConn();
         conn.setUsr(null);
         handle(req);
     }
 
     public void processBuffer(Connection conn, ByteBuffer buffer) {
-        Logger.log("DATA Received===>size="+buffer.limit());
+        Logger.log("[THttpD] DATA Received===>size="+buffer.limit());
         HttpReq req = (HttpReq)conn.getUsr();
         if(null == req){
             req = new HttpReq(conn,this);
@@ -63,24 +61,24 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         conn.clear();
         clients.remove(conn.socket);
         num--;
-        Logger.log("Conn("+conn.iID+") on Closing, num="+num+", code="+code);
+        Logger.log("[THttpD] Conn("+conn.iID+") on Closing, num="+num+", code="+code);
     }
 
     public void onSendComplete(Connection conn){
-        Logger.log("onSendComplete");
+        Logger.log("[THttpD] Conn("+conn.iID+") onSendComplete");
     }
 
     public void handle(Object usr, int mask) {
         try {
             SelectableChannel client = acceptor.accept();
             if(num >= MAX_CNN){
-                Logger.log("Error: conn out of balance, num="+num);
+                Logger.log("[THttpD] Error: conn out of balance, num="+num);
                 client.close();
                 return;
             }
             onAccepted(client);
         } catch (Exception e) {
-            Logger.log(e.getMessage());
+            Logger.log("[THttpD] ===>"+e.getMessage());
         }
     }
 
@@ -90,17 +88,17 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         InetSocketAddress address = new InetSocketAddress(port);
         acceptor.socket().bind(address);
         loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this,acceptor);
-        Logger.log("server started. port="+port+".....");
+        Logger.log("[THttpD] server started. port="+port+".....");
         while (true) {
             if(Signal.sig==Signal.SIG_INT){
-                Logger.log("SIG_INT caught.......");
+                Logger.log("[THttpD] SIG_INT caught.......");
                 break;
             }
             loop.processEvents();
         }
         loop.eventDel(acceptor,NIOEvent.AE_ACCEPT);
         loop.clear();
-        Logger.log("server stopped....");
+        Logger.log("[THttpD] server stopped....");
         System.exit(0);
     }
 

@@ -47,7 +47,7 @@ public class Connection implements Observer{
         try {
             r = ((SocketChannel) socket).read(buffer);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[Connection] ==>"+e.getMessage());
         }
         if (r <= 0) {
             close(0);
@@ -55,6 +55,7 @@ public class Connection implements Observer{
         }
         buffer.flip();
         loop.setTimer(iID,TIMEOUT,null,this);
+        Logger.log("[Connection] Conn("+iID+") "+r+"bytes received");
         handler.processBuffer(this,buffer);
         buffer.clear();
     }
@@ -65,7 +66,7 @@ public class Connection implements Observer{
         try {
             r = ((SocketChannel) socket).write(buffer);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[Connection] ==>"+e.getMessage());
         }
         if(r<=0){
             close(0);
@@ -75,7 +76,7 @@ public class Connection implements Observer{
             sendQueue.remove(0);
             buffer.clear();
         }
-        Logger.log("[Conn]"+r+"bytes send complete....");
+        Logger.log("[Connection] Conn("+iID+") "+r+"bytes send complete");
         this.handler.onSendComplete(this);
         loop.setTimer(iID,TIMEOUT,null,this);
         if(sendQueue.size()==0){
@@ -93,7 +94,7 @@ public class Connection implements Observer{
                 onWriteAble();
             }
         }else{
-            Logger.log("Conn("+iID+") expired..");
+            Logger.log("[Connection] Conn("+iID+") expired");
             close(0);
         }
     }
@@ -123,7 +124,7 @@ public class Connection implements Observer{
             try {
                 socket.close();
             }catch (Exception e){
-                Logger.log(e.getMessage());
+                Logger.log("[Connection] ==>"+e.getMessage());
             }
             socket = null;
         }

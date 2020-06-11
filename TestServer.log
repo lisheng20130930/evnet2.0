@@ -1,0 +1,58 @@
+2020-06-11 17:12:17 server started. port=58000.....
+2020-06-11 17:12:17 Select milliseconds=50000
+2020-06-11 17:12:30 Conn(0) accepted, num=1 success
+2020-06-11 17:12:30 Select milliseconds=10000
+2020-06-11 17:12:30 DATA Received===>size=541
+2020-06-11 17:12:30 req(0-0) parsed ready, szURL=/front/h5.html,bodySize=0
+2020-06-11 17:12:30 Select milliseconds=9984
+2020-06-11 17:12:30 doBusiness called. strReq=
+2020-06-11 17:12:31 req(0-0) success,used-time=104
+2020-06-11 17:12:31 [EventLoop]==>1 Actor handled...
+2020-06-11 17:12:31 Select milliseconds=9882
+2020-06-11 17:12:31 [Conn]102bytes send complete....
+2020-06-11 17:12:31 onSendComplete
+2020-06-11 17:12:31 Response Completed handled
+2020-06-11 17:12:31 Select milliseconds=10000
+2020-06-11 17:12:31 DATA Received===>size=454
+2020-06-11 17:12:31 req(1-0) parsed ready, szURL=/favicon.ico,bodySize=0
+2020-06-11 17:12:31 Select milliseconds=9998
+2020-06-11 17:12:31 doBusiness called. strReq=
+2020-06-11 17:12:31 req(1-0) success,used-time=4
+2020-06-11 17:12:31 [EventLoop]==>1 Actor handled...
+2020-06-11 17:12:31 Select milliseconds=9994
+2020-06-11 17:12:31 [Conn]102bytes send complete....
+2020-06-11 17:12:31 onSendComplete
+2020-06-11 17:12:31 Response Completed handled
+2020-06-11 17:12:31 Select milliseconds=10000
+2020-06-11 17:12:41 Conn(0) expired..
+2020-06-11 17:12:41 Conn(0) on Closing, num=0, code=0
+2020-06-11 17:12:41 Select milliseconds=50000
+2020-06-11 17:13:31 Select milliseconds=50000
+2020-06-11 17:14:21 Select milliseconds=50000
+2020-06-11 17:15:11 Select milliseconds=50000
+2020-06-11 17:16:01 Select milliseconds=50000
+2020-06-11 17:16:51 Select milliseconds=50000
+2020-06-11 17:17:41 Select milliseconds=50000
+2020-06-11 17:18:31 Select milliseconds=50000
+2020-06-11 17:19:21 Select milliseconds=50000
+2020-06-11 17:20:11 Select milliseconds=50000
+2020-06-11 17:21:01 Select milliseconds=50000
+2020-06-11 17:21:51 Select milliseconds=50000
+2020-06-11 17:22:41 Select milliseconds=50000
+2020-06-11 17:23:31 Select milliseconds=50000
+2020-06-11 17:24:21 Select milliseconds=50000
+2020-06-11 17:25:11 Select milliseconds=50000
+2020-06-11 17:26:01 Select milliseconds=50000
+2020-06-11 17:26:51 Select milliseconds=50000
+2020-06-11 17:27:41 Select milliseconds=50000
+2020-06-11 17:28:31 Select milliseconds=50000
+2020-06-11 17:29:21 Select milliseconds=50000
+2020-06-11 17:30:11 Select milliseconds=50000
+2020-06-11 17:31:01 Select milliseconds=50000
+2020-06-11 17:31:51 Select milliseconds=50000
+2020-06-11 17:32:41 Select milliseconds=50000
+2020-06-11 17:33:31 Select milliseconds=50000
+2020-06-11 17:34:21 Select milliseconds=50000
+2020-06-11 17:35:11 Select milliseconds=50000
+2020-06-11 17:36:01 Select milliseconds=50000
+2020-06-11 17:36:51 Select milliseconds=50000

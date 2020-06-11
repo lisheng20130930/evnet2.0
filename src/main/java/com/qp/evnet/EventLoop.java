@@ -62,7 +62,7 @@ public class EventLoop {
             }
             fireds.clear();
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EventLoop] ==>"+e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class EventLoop {
                 milliseconds = Math.min(nearest.when_ms-now,_timeout);
             }
         }
-        Logger.log("Select milliseconds="+milliseconds);
+        Logger.log("[EventLoop] Select milliseconds="+milliseconds);
         return milliseconds;
     }
 
@@ -98,7 +98,7 @@ public class EventLoop {
             processed ++;
         }
         if(processed>0) {
-            Logger.log("[EventLoop]==>" + processed + " Actor handled...");
+            Logger.log("[EventLoop] " + processed + " Actor handled...");
         }
         tmp.clear();
     }
@@ -113,7 +113,7 @@ public class EventLoop {
         try {
             pool.shutdownNow();
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EventLoop] ===>"+e.getMessage());
         }
         events.clear();
         timers.clear();

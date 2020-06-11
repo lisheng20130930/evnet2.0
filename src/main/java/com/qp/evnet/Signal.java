@@ -21,7 +21,7 @@ public class Signal implements SignalHandler {
         try {
             sun.misc.Signal.handle(new sun.misc.Signal(signalName), this);
         } catch (IllegalArgumentException e) {
-            Logger.log(e.getMessage());
+            Logger.log("[Signal] ===>"+e.getMessage());
         }
     }
 

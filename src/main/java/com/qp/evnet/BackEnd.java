@@ -13,7 +13,7 @@ public class BackEnd {
         try {
             selector = Selector.open();
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[BackEnd] ==>"+e.getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ public class BackEnd {
             }
             return true;
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[BackEnd] ==>"+e.getMessage());
         }
         return false;
     }

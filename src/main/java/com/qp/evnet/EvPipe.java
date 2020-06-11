@@ -18,7 +18,7 @@ public class EvPipe{
             this.pipe = Pipe.open();
             setup();
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EvPipe] ==>"+e.getMessage());
         }
     }
 
@@ -30,7 +30,7 @@ public class EvPipe{
                 r=sinkChannel.write(buffer);
             }while(r<=0);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EvPipe] ==>"+e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class EvPipe{
                 buffer.flip();
             }while(r>0);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EvPipe] ==>"+e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class EvPipe{
             sourceChannel.configureBlocking(false);
             sinkChannel.configureBlocking(false);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EvPipe] ==>"+e.getMessage());
         }
         loop.eventAdd(sourceChannel, NIOEvent.AE_READ, new Observer() {
             public void handle(Object usr, int mask) {
@@ -71,7 +71,7 @@ public class EvPipe{
             sinkChannel.close();
             sourceChannel.close();
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[EvPipe] ==>"+e.getMessage());
         }
     }
 

@@ -10,6 +10,8 @@ public class HttpReq{
     private HttpParser.ParserSettings settings = null;
     private ByteBuffer body = null;
     private String szURL = null;
+    private static long iIDSeed = 0;
+    public  String iID = null;
     public  long time = 0;
 
     public HttpReq(Connection conn, Delegate delegate){
@@ -18,6 +20,7 @@ public class HttpReq{
         this.delegate = delegate;
         this.settings = assignSettings();
         this.body = ByteBuffer.allocate(128);
+        this.iID = conn.iID+"-"+(iIDSeed++);
     }
 
     private HttpParser.ParserSettings assignSettings(){

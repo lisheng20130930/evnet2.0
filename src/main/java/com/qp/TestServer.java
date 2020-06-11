@@ -17,29 +17,30 @@ public class TestServer extends Thttpd {
         super(thread, timeout, port);
     }
 
-    private void business(Map<String,Object> pRsp, JSONObject pReq){
-        pRsp.put("code",200);
-        pRsp.put("msg","test success");
-        pRsp.put("echo",JSON.toJSON(pReq));
+    private void business(Map<String,Object> rsp, JSONObject pReq){
+        rsp.put("code",200);
+        rsp.put("msg","test success");
+        rsp.put("echo",JSON.toJSON(pReq));
     }
 
-    public void doBusiness(HttpReq req) {
-        Map<String,Object> pRsp = (Map<String,Object>)req.getUsr();
+    public Map<String,Object> doBusiness(HttpReq req) {
+        Map<String,Object> rsp = new HashMap<String,Object>();
         ByteBuffer buffer = req.getBody();
         String strReq = new String(buffer.array(),buffer.position(),buffer.limit());
-        Logger.log("doBusiness called. strReq="+strReq);
+        Logger.log("[TestServer] doBusiness called. strReq="+strReq);
         JSONObject pReq = null;
         try {
             pReq = JSON.parseObject(strReq);
         }catch (Exception e){
-            Logger.log(e.getMessage());
+            Logger.log("[TestServer] ==>"+e.getMessage());
         }
         if(pReq==null){
-            pRsp.put("code",700);
-            pRsp.put("msg","bad params");
-            return;
+            rsp.put("code",700);
+            rsp.put("msg","bad params");
+            return rsp;
         }
-        business(pRsp,pReq);
+        business(rsp,pReq);
+        return rsp;
     }
 
     public void onReqCompleted(HttpReq req) {
@@ -49,16 +50,15 @@ public class TestServer extends Thttpd {
         req.setUsr(null);
         long used = System.currentTimeMillis()-req.time;
         if(r){
-            Logger.log("req send called,used-time="+used);
+            Logger.log("[TestServer] req("+req.iID+") success,used-time="+used);
         }else{
-            Logger.log("req send error,used-time="+used);
+            Logger.log("[TestServer] req("+req.iID+") error,used-time="+used);
         }
     }
 
     @Override
     public void handle(HttpReq req) {
-        Map<String,Object> pRsp = new HashMap<String,Object>();
-        req.setUsr(pRsp);
+        req.time = System.currentTimeMillis();
         loop.actorAdd(new EvActor.TCB() {
             @Override
             public void handle(Object usr, int mask) {
@@ -66,16 +66,11 @@ public class TestServer extends Thttpd {
             }
             @Override
             public boolean run(Object usr) {
-                doBusiness((HttpReq)usr);
+                Map r = doBusiness((HttpReq)usr);
+                req.setUsr(r);
                 return true;
             }
         },req);
-    }
-
-    @Override
-    public void onSendComplete(Connection conn){
-        super.onSendComplete(conn);
-        Logger.log("Response Completed handled");
     }
 
     public static void main(String[] args){
