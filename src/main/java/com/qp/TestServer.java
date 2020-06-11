@@ -44,8 +44,8 @@ public class TestServer extends Thttpd {
     }
 
     public void onReqCompleted(HttpReq req) {
-        String szRsp = JSON.toJSONString((Map)req.getUsr());
-        String str = String.format("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %d\r\n\r\n%s",szRsp.getBytes().length,szRsp);
+        String rsp = JSON.toJSONString((Map)req.getUsr());
+        String str = String.format("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %d\r\n\r\n%s",rsp.getBytes().length,rsp);
         boolean r = req.getConn().sendBuffer(str.getBytes());
         req.setUsr(null);
         long used = System.currentTimeMillis()-req.time;
