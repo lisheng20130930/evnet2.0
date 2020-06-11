@@ -77,7 +77,8 @@ public class HttpReq{
         if(body.limit()+len>body.capacity()){
             ByteBuffer tmp = body;
             body = ByteBuffer.allocate(tmp.capacity()+len*2 + 1);
-            body.put(tmp.array());
+            tmp.flip();
+            body.put(tmp.array(),tmp.position(),tmp.limit());
         }
         body.put(buffer.array(),pos,len);
         return true;

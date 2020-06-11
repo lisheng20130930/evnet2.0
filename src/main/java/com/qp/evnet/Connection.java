@@ -50,7 +50,7 @@ public class Connection implements Observer{
             Logger.log(e.getMessage());
         }
         if (r <= 0) {
-            close(-1);
+            close(0);
             return;
         }
         buffer.flip();
@@ -68,7 +68,7 @@ public class Connection implements Observer{
             Logger.log(e.getMessage());
         }
         if(r<=0){
-            close(-1);
+            close(0);
             return;
         }
         if(buffer.position()==buffer.limit()){
@@ -94,7 +94,7 @@ public class Connection implements Observer{
             }
         }else{
             Logger.log("Conn("+iID+") expired..");
-            close(-1);
+            close(0);
         }
     }
 
