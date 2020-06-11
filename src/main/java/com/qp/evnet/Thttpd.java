@@ -37,7 +37,7 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         Logger.log("[THttpD] Conn("+conn.iID+") accepted, num="+num+" success");
     }
 
-    public void ReqReady(HttpReq req) {
+    public void reqReady(HttpReq req) {
         Logger.log("[THttpD] req("+req.iID+") parsed ready, szURL="+req.getURL()+",bodySize="+req.getBody().limit());
         Connection conn = req.getConn();
         conn.setUsr(null);

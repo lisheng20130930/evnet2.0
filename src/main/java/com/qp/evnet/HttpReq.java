@@ -89,7 +89,7 @@ public class HttpReq{
 
     public boolean onBodyComplete() {
         body.flip();
-        delegate.ReqReady(this);
+        delegate.reqReady(this);
         return true;
     }
 
@@ -111,6 +111,6 @@ public class HttpReq{
     }
 
     public interface Delegate{
-        void ReqReady(HttpReq req);
+        void reqReady(HttpReq req);
     }
 }
