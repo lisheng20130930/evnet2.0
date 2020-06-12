@@ -1,13 +1,18 @@
 package com.qp.evnet;
 
+import com.qp.utils.Logger;
+
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 public class HttpReq{
+    private HttpParser.ParserSettings settings = null;
+    private HashMap<String,String> headers = null;
+    private String filed = null;
     private Connection conn = null;
     private HttpParser parser = null;
     private Delegate delegate = null;
     private Object usr = null;
-    private HttpParser.ParserSettings settings = null;
     private ByteBuffer body = null;
     private String szURL = null;
     private static long iIDSeed = 0;
@@ -16,6 +21,7 @@ public class HttpReq{
 
     public HttpReq(Connection conn, Delegate delegate){
         this.parser = new HttpParser(HttpParser.HTTP_REQUEST);
+        this.headers = new HashMap<String,String>();
         this.conn = conn;
         this.delegate = delegate;
         this.settings = assignSettings();
@@ -41,7 +47,7 @@ public class HttpReq{
             try {
                 szURL = new String(buffer.array(), pos, len, "UTF-8");
             }catch (Exception e){
-                e.printStackTrace();
+                Logger.log("[Req] ===>"+e.getMessage());
                 return -1;
             }
             return 0;
@@ -52,6 +58,20 @@ public class HttpReq{
                 return 0;
             }
             return -1;
+        };
+        settings.on_header_field = (p, buffer, pos, len) -> {
+            if(filed != null){
+                Logger.log("[Req] filed not NULL, you should check HERE");
+            }
+            filed = new String(buffer.array(), pos, len);
+            return 0;
+        };
+        settings.on_header_value = (p, buffer, pos, len) -> {
+            if(null!=filed){
+                headers.put(filed,new String(buffer.array(), pos, len));
+                filed = null;
+            }
+            return 0;
         };
         return settings;
     }
@@ -91,6 +111,10 @@ public class HttpReq{
         body.flip();
         delegate.reqReady(this);
         return true;
+    }
+
+    public HashMap<String,String> getHeaders(){
+        return headers;
     }
 
     public ByteBuffer getBody(){
