@@ -4,7 +4,8 @@ import com.qp.utils.Logger;
 import sun.misc.SignalHandler;
 
 public class Signal implements SignalHandler {
-    public static final int SIG_INT = 5;
+    public static final int SIG_EXIT = 5;
+    public static final int SIG_HUP  = 6;
     public static volatile int sig = 0;
     private EventLoop loop = null;
 
@@ -14,7 +15,9 @@ public class Signal implements SignalHandler {
     }
 
     private void setupHandler() {
+        this.handleSignal("TERM");
         this.handleSignal("INT");
+        this.handleSignal("HUP");
     }
 
     public void handleSignal(final String signalName) {
@@ -26,9 +29,12 @@ public class Signal implements SignalHandler {
     }
 
     public void handle(sun.misc.Signal signal) {
-        if (signal.getName().equals("INT")) {
-            sig = SIG_INT;
-            loop.async();
+        if(signal.getName().equals("TERM")
+                ||signal.getName().equals("INT")){
+            sig = SIG_EXIT;
+        }else{
+            sig = SIG_HUP;
         }
+        loop.async();
     }
 }

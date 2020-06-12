@@ -90,9 +90,12 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this,acceptor);
         Logger.log("[THttpD] server started. port="+port+".....");
         while (true) {
-            if(Signal.sig==Signal.SIG_INT){
-                Logger.log("[THttpD] SIG_INT caught.......");
+            if(Signal.sig==Signal.SIG_EXIT){
+                Logger.log("[THttpD] SIG_EXIT caught...");
                 break;
+            }else if(Signal.sig==Signal.SIG_HUP){
+                onSignalHUP();
+                Signal.sig = 0;
             }
             loop.processEvents();
         }
@@ -102,5 +105,6 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         System.exit(0);
     }
 
+    protected void onSignalHUP(){Logger.log("[THttpD] SIG_HUP....");}
     public abstract void handle(HttpReq req);
 }
