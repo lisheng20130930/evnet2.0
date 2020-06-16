@@ -26,5 +26,10 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.15</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.5.8</version>
+        </dependency>
     </dependencies>
 </project>

@@ -121,3 +121,6 @@
 2020-06-12 10:28:56 [Connection] Conn(0) expired
 2020-06-12 10:28:56 [THttpD] Conn(0) on Closing, num=0, code=0
 2020-06-12 10:28:56 [EventLoop] Select milliseconds=50000
+2020-06-12 17:42:03 [Signal] ===>Unknown signal: HUP
+2020-06-12 17:42:03 [THttpD] server started. port=58000.....
+2020-06-12 17:42:03 [EventLoop] Select milliseconds=50000
