@@ -97,9 +97,9 @@ public class HttpReq{
     }
 
     public boolean onBodyData(ByteBuffer buffer, int pos, int len){
-        if(body.limit()+len>body.capacity()){
+        if(body.position()+len>body.limit()){
             ByteBuffer tmp = body;
-            body = ByteBuffer.allocate(tmp.capacity()+len*2 + 1);
+            body = ByteBuffer.allocate(tmp.position()+len*2 + 1);
             tmp.flip();
             body.put(tmp.array(),tmp.position(),tmp.limit());
         }
