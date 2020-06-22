@@ -31,5 +31,10 @@
             <artifactId>zookeeper</artifactId>
             <version>3.5.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
     </dependencies>
 </project>

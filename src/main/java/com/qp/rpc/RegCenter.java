@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 用来服务组内部RPC的模块
+ * 组成：1个中心服(ZOOKEEPER) + N个互相协作的服务
+ * 通过nginx反向代理这个服务组来给外网提供Api
+ */
 public class RegCenter implements Watcher {
     private static RegCenter sInst = new RegCenter();
     private Map<String,Consumer> consumers = null;

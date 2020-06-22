@@ -1,58 +1,40 @@
 package com.qp.rpc;
 
+import com.qp.utils.HttpUtils;
 import com.qp.utils.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class RPClient {
-    private String url = null;
-
-    private static RPClient build(String pathService){
+    private String getURL(String pathService){
         Consumer consumer = RegCenter.shared().getConsumer(pathService);
         if(null!=consumer&&consumer.isHasChildren()){
             List<String> list = consumer.getChildren();
             if(list.size()>0){
                 int n = new Random().nextInt(list.size());
-                return new RPClient(list.get(n));
+                return list.get(n);
             }
         }
         return null;
     }
 
-    private static RPClient getRPClient(String pathService){
-        return build(pathService);
-    }
-
-    private void close(){
-        //HERE RETURN TO POOL
-    }
-
-    public static Map<String,String> RPC(String pathService,Map<String,String> params){
-        Map<String,String> result = null;
-        RPClient rpClient = RPClient.getRPClient("/mytest");
-        if(rpClient!=null){
-            result = rpClient.RPC(params);
-            rpClient.close();
+    public String RPC(String pathService, String jsonStr){
+        Logger.log("[RPClient] RPC CALL. pathService="+pathService+",params="+jsonStr);
+        String result = null;
+        String szURL = getURL(pathService);
+        //szURL = "http://127.0.0.1:32000/api";
+        if(szURL!=null){
+            long tmp = System.currentTimeMillis();
+            result = HttpUtils.sendPostDataByJson(szURL,jsonStr);
+            Logger.log("[RPClient] used==>"+(System.currentTimeMillis()-tmp));
         }
         return result;
     }
 
-    private RPClient(String url){
-        this.url = url;
-    }
-
-    public Map<String,String> RPC(Map<String,String> params){
-        Logger.log("[RPClient] RPC CALL. URL="+this.url+",params="+params);
-        return new HashMap<>();
-    }
-
     public static void main(String[] args){
         RegCenter.shared().consume("/mytest",true);
-        Map<String,String> params = new HashMap<>();
-        Map<String,String> result = RPClient.RPC("/mytest",params);
-        System.out.println(result);
+        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
+        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
+        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
     }
 }

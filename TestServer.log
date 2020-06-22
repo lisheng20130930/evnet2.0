@@ -124,3 +124,186 @@
 2020-06-12 17:42:03 [Signal] ===>Unknown signal: HUP
 2020-06-12 17:42:03 [THttpD] server started. port=58000.....
 2020-06-12 17:42:03 [EventLoop] Select milliseconds=50000
+2020-06-22 16:41:05 [RegCenter] zookeeper setup enter
+2020-06-22 16:41:05 [RegCenter] zookeeper success
+2020-06-22 16:41:05 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:41:05 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:41:06 null
+2020-06-22 16:41:06 null
+2020-06-22 16:41:49 [RegCenter] zookeeper setup enter
+2020-06-22 16:41:49 [RegCenter] zookeeper success
+2020-06-22 16:41:49 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:41:49 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:41:50 null
+2020-06-22 16:41:50 null
+2020-06-22 16:43:04 [RegCenter] zookeeper setup enter
+2020-06-22 16:43:04 [RegCenter] zookeeper success
+2020-06-22 16:43:04 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:43:04 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:43:08 null
+2020-06-22 16:43:11 [RegCenter======>] receive the event:WatchedEvent state:Disconnected type:None path:null
+2020-06-22 16:43:11 null
+2020-06-22 16:46:58 [RegCenter] zookeeper setup enter
+2020-06-22 16:46:59 [RegCenter] zookeeper success
+2020-06-22 16:46:59 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:46:59 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:46:59 [HttpUtils]==>null
+2020-06-22 16:48:12 [RegCenter] zookeeper setup enter
+2020-06-22 16:48:12 [RegCenter] zookeeper success
+2020-06-22 16:48:12 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:48:12 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:56:43 [RegCenter] zookeeper setup enter
+2020-06-22 16:56:43 [RegCenter] zookeeper success
+2020-06-22 16:56:43 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:56:43 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:57:42 [RegCenter] zookeeper setup enter
+2020-06-22 16:57:42 [RegCenter] zookeeper success
+2020-06-22 16:57:42 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:57:42 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:57:48 [RegCenter] zookeeper setup enter
+2020-06-22 16:57:49 [RegCenter] zookeeper success
+2020-06-22 16:57:49 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:57:49 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:58:48 [RegCenter] zookeeper setup enter
+2020-06-22 16:58:49 [RegCenter] zookeeper success
+2020-06-22 16:58:49 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:58:49 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:58:58 [RegCenter] zookeeper setup enter
+2020-06-22 16:58:58 [RegCenter] zookeeper success
+2020-06-22 16:58:58 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:58:58 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:27 [RegCenter] zookeeper setup enter
+2020-06-22 16:59:27 [RegCenter] zookeeper success
+2020-06-22 16:59:27 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:59:27 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:28 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:28 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:34 [RegCenter] zookeeper setup enter
+2020-06-22 16:59:34 [RegCenter] zookeeper success
+2020-06-22 16:59:34 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:59:34 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:35 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:35 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:45 [RegCenter] zookeeper setup enter
+2020-06-22 16:59:45 [RegCenter] zookeeper success
+2020-06-22 16:59:45 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 16:59:45 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:46 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 16:59:46 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 17:00:15 [RegCenter] zookeeper setup enter
+2020-06-22 17:00:15 [RegCenter] zookeeper success
+2020-06-22 17:00:15 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:00:16 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 17:00:16 USED==>360
+2020-06-22 17:00:16 {"code":200,"msg":"pang"}
+2020-06-22 17:00:16 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 17:00:16 USED==>7
+2020-06-22 17:00:16 {"code":200,"msg":"pang"}
+2020-06-22 17:00:16 [RPClient] RPC CALL. pathService=/mytest,params={"params":"ABC"}
+2020-06-22 17:00:16 USED==>6
+2020-06-22 17:00:16 {"code":200,"msg":"pang"}
+2020-06-22 17:00:53 [RegCenter] zookeeper setup enter
+2020-06-22 17:00:53 [RegCenter] zookeeper success
+2020-06-22 17:00:53 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:00:53 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:00:53 USED==>351
+2020-06-22 17:00:53 {"code":200,"msg":"pang"}
+2020-06-22 17:00:53 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:00:53 USED==>9
+2020-06-22 17:00:53 {"code":200,"msg":"pang"}
+2020-06-22 17:00:53 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:00:53 USED==>6
+2020-06-22 17:00:53 {"code":200,"msg":"pang"}
+2020-06-22 17:02:36 [RegCenter] zookeeper setup enter
+2020-06-22 17:02:36 [RegCenter] zookeeper success
+2020-06-22 17:02:36 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:02:36 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:02:36 USED==>320
+2020-06-22 17:02:36 {"code":200,"msg":"pang"}
+2020-06-22 17:02:36 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:02:36 USED==>9
+2020-06-22 17:02:36 {"code":200,"msg":"pang"}
+2020-06-22 17:02:36 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:02:36 USED==>5
+2020-06-22 17:02:36 {"code":200,"msg":"pang"}
+2020-06-22 17:03:38 [RegCenter] zookeeper setup enter
+2020-06-22 17:03:38 [RegCenter] zookeeper success
+2020-06-22 17:03:38 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:03:38 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:03:38 USED==>354
+2020-06-22 17:03:38 {"code":200,"msg":"pang"}
+2020-06-22 17:03:47 [RegCenter] zookeeper setup enter
+2020-06-22 17:03:47 [RegCenter] zookeeper success
+2020-06-22 17:03:47 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:03:47 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:03:47 USED==>353
+2020-06-22 17:03:47 {"code":200,"msg":"pang"}
+2020-06-22 17:03:56 [RegCenter] zookeeper setup enter
+2020-06-22 17:03:56 [RegCenter] zookeeper success
+2020-06-22 17:03:56 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:03:56 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:03:56 USED==>349
+2020-06-22 17:03:56 {"code":200,"msg":"pang"}
+2020-06-22 17:03:56 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:03:56 USED==>7
+2020-06-22 17:03:56 {"code":200,"msg":"pang"}
+2020-06-22 17:25:39 [RegCenter] zookeeper setup enter
+2020-06-22 17:25:39 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:25:39 [RegCenter] zookeeper success
+2020-06-22 17:25:39 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:25:39 [RPClient] used==>319
+2020-06-22 17:25:39 null
+2020-06-22 17:25:39 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:25:39 [RPClient] used==>0
+2020-06-22 17:25:39 null
+2020-06-22 17:25:39 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:25:39 [RPClient] used==>0
+2020-06-22 17:25:39 null
+2020-06-22 17:26:02 [RegCenter] zookeeper setup enter
+2020-06-22 17:26:02 [RegCenter] zookeeper success
+2020-06-22 17:26:02 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:26:02 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:02 [RPClient] used==>401
+2020-06-22 17:26:02 {"code":200,"msg":"pang"}
+2020-06-22 17:26:02 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:02 [RPClient] used==>4
+2020-06-22 17:26:02 {"code":200,"msg":"pang"}
+2020-06-22 17:26:02 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:02 [RPClient] used==>3
+2020-06-22 17:26:02 {"code":200,"msg":"pang"}
+2020-06-22 17:26:14 [RegCenter] zookeeper setup enter
+2020-06-22 17:26:14 [RegCenter] zookeeper success
+2020-06-22 17:26:14 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:26:14 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:14 [RPClient] used==>360
+2020-06-22 17:26:14 {"code":200,"msg":"pang"}
+2020-06-22 17:26:14 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:14 [RPClient] used==>7
+2020-06-22 17:26:14 {"code":200,"msg":"pang"}
+2020-06-22 17:26:14 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:14 [RPClient] used==>4
+2020-06-22 17:26:14 {"code":200,"msg":"pang"}
+2020-06-22 17:26:22 [RegCenter] zookeeper setup enter
+2020-06-22 17:26:22 [RegCenter] zookeeper success
+2020-06-22 17:26:22 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:26:22 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:23 [RPClient] used==>419
+2020-06-22 17:26:23 {"code":200,"msg":"pang"}
+2020-06-22 17:26:23 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:23 [RPClient] used==>12
+2020-06-22 17:26:23 {"code":200,"msg":"pang"}
+2020-06-22 17:26:23 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:26:23 [RPClient] used==>6
+2020-06-22 17:26:23 {"code":200,"msg":"pang"}
+2020-06-22 17:27:04 [RegCenter] zookeeper setup enter
+2020-06-22 17:27:05 [RegCenter] zookeeper success
+2020-06-22 17:27:05 [RegCenter======>] receive the event:WatchedEvent state:SyncConnected type:None path:null
+2020-06-22 17:27:05 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:27:05 [RPClient] used==>397
+2020-06-22 17:27:05 {"code":200,"msg":"pang"}
+2020-06-22 17:27:05 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:27:05 [RPClient] used==>13
+2020-06-22 17:27:05 {"code":200,"msg":"pang"}
+2020-06-22 17:27:05 [RPClient] RPC CALL. pathService=/mytest,params={"cmd": 5000}
+2020-06-22 17:27:05 [RPClient] used==>5
+2020-06-22 17:27:05 {"code":200,"msg":"pang"}
