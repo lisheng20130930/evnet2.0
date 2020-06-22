@@ -15,7 +15,7 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
     protected ServerSocketChannel acceptor = null;
     protected EventLoop loop = null;
     protected int port = 0;
-    private int num = 0;
+    protected int num = 0;
 
     public Thttpd(int thread, int timeout, int port){
         clients = new HashMap<SelectableChannel,Connection>();
