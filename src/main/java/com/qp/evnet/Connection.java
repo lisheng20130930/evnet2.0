@@ -13,7 +13,7 @@ public class Connection implements Observer{
     private static final int FLG_SEND_ENABLED =  (0x02);
     private final static int BUFFER_SIZE = 10240;
     public SelectableChannel socket = null;
-    private static final int TIMEOUT = 10*1000;
+    private static final int TIMEOUT = 15*1000;
     private EventLoop loop = null;
     private Handler handler = null;
     private List<ByteBuffer> sendQueue = null;
@@ -77,7 +77,11 @@ public class Connection implements Observer{
             buffer.clear();
         }
         Logger.log("[Connection] Conn("+iID+") "+r+"bytes send complete");
-        this.handler.onSendComplete(this);
+        r = this.handler.onSendComplete(this);
+        if(r!=0){
+            close(0);
+            return;
+        }
         loop.setTimer(iID,TIMEOUT,null,this);
         if(sendQueue.size()==0){
             loop.eventDel(socket, NIOEvent.AE_WRITE);
@@ -139,7 +143,7 @@ public class Connection implements Observer{
 
     public interface Handler {
         void processBuffer(Connection conn, ByteBuffer buffer);
-        void onSendComplete(Connection conn);
+        int  onSendComplete(Connection conn);
         void onClosing(Connection conn, int code);
     }
 }

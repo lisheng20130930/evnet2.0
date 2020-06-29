@@ -65,8 +65,9 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         Logger.log("[THttpD] Conn("+conn.iID+") on Closing, num="+num+", code="+code);
     }
 
-    public void onSendComplete(Connection conn){
+    public int onSendComplete(Connection conn){
         Logger.log("[THttpD] Conn("+conn.iID+") onSendComplete");
+        return 0;
     }
 
     public void handle(Object usr, int mask) {
@@ -89,7 +90,7 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         InetSocketAddress address = new InetSocketAddress(port);
         acceptor.socket().bind(address);
         loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this,acceptor);
-        Logger.log("[THttpD] server started. port="+port+".....");
+        onServerStarted();
         while (true) {
             if(Signal.sig==Signal.SIG_EXIT){
                 Logger.log("[THttpD] SIG_EXIT caught...");
@@ -106,6 +107,11 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         System.exit(0);
     }
 
-    protected void onSignalHUP(){Logger.log("[THttpD] SIG_HUP....");}
+    protected void onSignalHUP(){
+        Logger.log("[THttpD] SIG_HUP....");
+    }
+    protected void onServerStarted(){
+        Logger.log("[THttpD] server started. port="+port+".....");
+    };
     public abstract void handle(HttpReq req);
 }

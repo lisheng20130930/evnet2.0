@@ -6,6 +6,8 @@ import com.qp.evnet.Connection;
 import com.qp.evnet.EvActor;
 import com.qp.evnet.HttpReq;
 import com.qp.evnet.Thttpd;
+import com.qp.harbor.Provider;
+import com.qp.harbor.RegCenter;
 import com.qp.utils.Logger;
 
 import java.nio.ByteBuffer;
@@ -48,6 +50,7 @@ public class TestServer extends Thttpd {
         String str = String.format("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %d\r\n\r\n%s",rsp.getBytes().length,rsp);
         boolean r = req.getConn().sendBuffer(str.getBytes());
         req.setUsr(null);
+        req.clear();
         long used = System.currentTimeMillis()-req.time;
         if(r){
             Logger.log("[TestServer] req("+req.iID+") success,used-time="+used);
@@ -71,6 +74,12 @@ public class TestServer extends Thttpd {
                 return true;
             }
         },req);
+    }
+
+    @Override
+    public void onServerStarted(){
+        //RegCenter.shared().provide("/testServer", Provider.PERSISTENT,"http://192.168.18.45:58000");
+        //RegCenter.shared().consume("/mytest",true);
     }
 
     public static void main(String[] args){

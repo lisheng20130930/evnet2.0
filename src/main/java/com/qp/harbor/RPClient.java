@@ -6,6 +6,16 @@ import com.qp.utils.Logger;
 import java.util.*;
 
 public class RPClient {
+    private static RPClient inst = new RPClient();
+
+    private RPClient(){
+
+    }
+
+    public static RPClient shared(){
+        return inst;
+    }
+
     private String getURL(String pathService){
         Consumer consumer = RegCenter.shared().getConsumer(pathService);
         if(null!=consumer&&consumer.isHasChildren()){
@@ -33,8 +43,8 @@ public class RPClient {
 
     public static void main(String[] args){
         RegCenter.shared().consume("/mytest",true);
-        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
-        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
-        Logger.log(new RPClient().RPC("/mytest","{\"cmd\": 5000}"));
+        Logger.log(RPClient.shared().RPC("/mytest","{\"cmd\": 5000}"));
+        Logger.log(RPClient.shared().RPC("/mytest","{\"cmd\": 5000}"));
+        Logger.log(RPClient.shared().RPC("/mytest","{\"cmd\": 5000}"));
     }
 }
