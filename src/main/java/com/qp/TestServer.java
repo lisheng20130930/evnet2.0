@@ -2,12 +2,7 @@ package com.qp;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.qp.evnet.Connection;
-import com.qp.evnet.EvActor;
-import com.qp.evnet.HttpReq;
-import com.qp.evnet.Thttpd;
-import com.qp.harbor.Provider;
-import com.qp.harbor.RegCenter;
+import com.qp.evnet.*;
 import com.qp.utils.Logger;
 
 import java.nio.ByteBuffer;
@@ -60,8 +55,20 @@ public class TestServer extends Thttpd {
     }
 
     @Override
-    public void handle(HttpReq req) {
+    protected void handle(HttpReq req) {
         req.time = System.currentTimeMillis();
+        if(req.isUpgrade()){
+            boolean r = upgradeWsChannel(req);
+            req.clear();
+            if(!r){
+                req.getConn().close(0);
+            }
+            long used = System.currentTimeMillis()-req.time;
+            Logger.log("[TestServer] req ("+req.iID+") "
+                    +"upgrade "+(r?"success":"error")+",used-time="+used);
+            Logger.log("[TestServer] WebSocket established");
+            return;
+        }
         loop.actorAdd(new EvActor.TCB() {
             @Override
             public void handle(Object usr, int mask) {
@@ -77,14 +84,26 @@ public class TestServer extends Thttpd {
     }
 
     @Override
-    public void onServerStarted(){
-        //RegCenter.shared().provide("/testServer", Provider.PERSISTENT,"http://192.168.18.45:58000");
-        //RegCenter.shared().consume("/mytest",true);
+    public void onClosing(Connection conn, int code) {
+        THandler p = (THandler) conn.getUsr();
+        if (p != null && p instanceof WsParser) {
+            ((WsParser)p).clear();
+            conn.setUsr(null);
+            Logger.log("[TestServer] WebSocket closed");
+        }
+        super.onClosing(conn,code);
+    }
+
+    @Override
+    protected boolean onWsMessage(Connection conn, String message){
+        Logger.log("[TestServer] WebSocket onWsMessage==>"+message);
+        sendWsMessage(conn,"{\"janus\":\"ack\"}");
+        return super.onWsMessage(conn,message);
     }
 
     public static void main(String[] args){
         try {
-            new TestServer(4, 50000,58000).run();
+            new TestServer(4, 50000,8188).run();
         }catch (Exception e){
             e.printStackTrace();
         }

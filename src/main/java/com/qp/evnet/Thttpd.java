@@ -9,10 +9,11 @@ import java.nio.channels.ServerSocketChannel;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Delegate{
+public abstract class Thttpd implements Observer, Connection.Handler{
     protected final int MAX_CNN = 8000; /* max conn count */
     protected Map<SelectableChannel, Connection> clients = null;
     protected ServerSocketChannel acceptor = null;
+    protected Observer listener = null;
     protected EventLoop loop = null;
     protected int port = 0;
     protected int num = 0;
@@ -37,22 +38,77 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         Logger.log("[THttpD] Conn("+conn.iID+") accepted, num="+num+" success");
     }
 
-    public void reqReady(HttpReq req) {
-        Logger.log("[THttpD] req("+req.iID+") parsed ready, szURL="+req.getURL()+",bodySize="+req.getBody().limit());
-        Logger.log("[THttpD] headers:"+req.getHeaders().toString());
-        Connection conn = req.getConn();
-        conn.setUsr(null);
-        handle(req);
+    private THandler newHttpReq(Connection conn){
+        return new HttpReq(conn,new HttpReq.Delegate(){
+            @Override
+            public void reqReady(HttpReq req) {
+                Logger.log("[THttpD] req("+req.iID+") parsed ready, szURL="+req.getURL()
+                        +",bodySize="+req.getBody().limit());
+                Logger.log("[THttpD] headers:"+req.getHeaders().toString());
+                Connection conn = req.getConn();
+                conn.setUsr(null);
+                handle(req);
+            }
+        });
+    }
+
+    private boolean onWsFrameDefault(Connection conn, WsParser.WsFrame frame){
+        boolean r = false;
+        switch(frame.frameType){
+            case WsParser.WsFrame.WS_PING_FRAME:
+                {
+                    WsParser.WsFrame rsp = new WsParser.WsFrame(WsParser.WsFrame.WS_PONG_FRAME, null);
+                    r = conn.sendBuffer(rsp.toByteBuffer().array());
+                }
+                break;
+            case WsParser.WsFrame.WS_CLOSING_FRAME:
+                {
+                    conn.close(0);
+                    r = false;
+                }
+                break;
+            default:
+                break;
+        }
+        return r;
+    }
+
+    protected boolean upgradeWsChannel(HttpReq req){
+        WsParser wsParser = new WsParser(req.getConn(), new WsParser.Delegate() {
+            @Override
+            public boolean onWsFrame(Connection conn, WsParser.WsFrame frame) {
+                boolean r = false;
+                if(frame.frameType== WsParser.WsFrame.WS_TEXT_FRAME) {
+                    r = onWsMessage(conn,
+                            new String(frame.payLoad.array(),frame.payLoad.position(),frame.payLoad.limit()));
+                }else{
+                    r = onWsFrameDefault(conn,frame);
+                }
+                return r;
+            }
+        });
+        if(!wsParser.prepare(req.getHeaders())){
+            wsParser.clear();
+            return false;
+        }
+        String rsp = wsParser.upgrade();
+        if(null==rsp){
+            wsParser.clear();
+            return false;
+        }
+        req.getConn().setUsr(wsParser);
+        Logger.log("[THttpD] upgrade==>"+rsp);
+        return req.getConn().sendBuffer(rsp.getBytes());
     }
 
     public void processBuffer(Connection conn, ByteBuffer buffer) {
         Logger.log("[THttpD] DATA Received===>size="+buffer.limit());
-        HttpReq req = (HttpReq)conn.getUsr();
-        if(null == req){
-            req = new HttpReq(conn,this);
-            conn.setUsr(req);
+        THandler p = (THandler)conn.getUsr();
+        if(null == p){
+            p = newHttpReq(conn);
+            conn.setUsr(p);
         }
-        int r = req.handle(buffer);
+        int r = p.handle(buffer);
         if(r != buffer.limit()){
             conn.close(-1);
         }
@@ -90,13 +146,14 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         InetSocketAddress address = new InetSocketAddress(port);
         acceptor.socket().bind(address);
         loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this,acceptor);
-        onServerStarted();
+        Logger.log("[THttpD] server started. port="+port+".....");
         while (true) {
             if(Signal.sig==Signal.SIG_EXIT){
                 Logger.log("[THttpD] SIG_EXIT caught...");
                 break;
             }else if(Signal.sig==Signal.SIG_HUP){
-                onSignalHUP();
+                Logger.log("[THttpD] SIG_HUP....");
+                onHup();
                 Signal.sig = 0;
             }
             loop.processEvents();
@@ -107,11 +164,22 @@ public abstract class Thttpd implements Observer, Connection.Handler,HttpReq.Del
         System.exit(0);
     }
 
-    protected void onSignalHUP(){
-        Logger.log("[THttpD] SIG_HUP....");
+    protected abstract void handle(HttpReq req);
+
+    protected boolean onWsMessage(Connection conn, String message){
+        return true;
     }
-    protected void onServerStarted(){
-        Logger.log("[THttpD] server started. port="+port+".....");
-    };
-    public abstract void handle(HttpReq req);
+
+    protected void onHup(){
+        return;
+    }
+
+    protected boolean sendWsMessage(Connection conn, String message){
+        WsParser.WsFrame rsp = new WsParser.WsFrame(WsParser.WsFrame.WS_TEXT_FRAME, ByteBuffer.wrap(message.getBytes()));
+        return conn.sendBuffer(rsp.toByteBuffer().array());
+    }
+
+    public interface THandler{
+        int handle(ByteBuffer buffer);
+    }
 }

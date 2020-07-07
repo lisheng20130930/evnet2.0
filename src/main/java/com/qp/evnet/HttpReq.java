@@ -5,7 +5,7 @@ import com.qp.utils.Logger;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-public class HttpReq{
+public class HttpReq implements Thttpd.THandler {
     private HttpParser.ParserSettings settings = null;
     private HashMap<String,String> headers = null;
     private String filed = null;
@@ -76,6 +76,11 @@ public class HttpReq{
         return settings;
     }
 
+    public boolean isUpgrade(){
+        return parser.upgrade;
+    }
+
+    @Override
     public int handle(ByteBuffer buffer){
         int used = parser.execute(settings,buffer);
         if(used != buffer.limit()){
@@ -101,7 +106,7 @@ public class HttpReq{
             ByteBuffer tmp = body;
             body = ByteBuffer.allocate(tmp.position()+len*2 + 1);
             tmp.flip();
-            body.put(tmp.array(),tmp.position(),tmp.limit());
+            body.put(tmp.array(),0,tmp.limit());
         }
         body.put(buffer.array(),pos,len);
         return true;
