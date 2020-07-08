@@ -54,6 +54,9 @@ public class WsParser implements Thttpd.THandler {
             return map;
         }
         byte[] inputFrame = buffer.array();
+        // Do NOT support continuation frames
+        // checks extensions off
+        // checks masking bit
         if ((inputFrame[0] & 0x70) != 0x0
             ||(inputFrame[0] & 0x80) != 0x80
             ||(inputFrame[1] & 0x80) != 0x80) {
@@ -164,17 +167,18 @@ public class WsParser implements Thttpd.THandler {
         return rsp;
     }
 
-    public boolean prepare(HashMap<String, String> headers) {
+    public String prepare(HashMap<String, String> headers) {
         this.host = headers.get("Host");
         this.key = headers.get("Sec-WebSocket-Key");
         this.protocol = headers.get("Sec-WebSocket-Protocol");
         this.version = headers.get("Sec-WebSocket-Version");
         Logger.log("[WsParser] prepared==>host="+host+",key="+key+",protocol="+protocol+",version="+version);
+        String rsp = null;
         if(!this.version.equals("13")){
             Logger.log("[WsParser] now we only support version 13");
-            return false;
+            rsp = "HTTP/1.1 400 Bad Request\r\nSec-WebSocket-Version: 13\r\n\r\n";
         }
-        return true;
+        return rsp;
     }
 
     public void clear(){

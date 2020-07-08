@@ -87,17 +87,16 @@ public abstract class Thttpd implements Observer, Connection.Handler{
                 return r;
             }
         });
-        if(!wsParser.prepare(req.getHeaders())){
-            wsParser.clear();
-            return false;
+        String rsp = wsParser.prepare(req.getHeaders());
+        if(null==rsp){
+            rsp = wsParser.upgrade();
         }
-        String rsp = wsParser.upgrade();
         if(null==rsp){
             wsParser.clear();
             return false;
         }
         req.getConn().setUsr(wsParser);
-        Logger.log("[THttpD] upgrade==>"+rsp);
+        Logger.log("[THttpD] upgradeWsChannel==>"+rsp);
         return req.getConn().sendBuffer(rsp.getBytes());
     }
 
