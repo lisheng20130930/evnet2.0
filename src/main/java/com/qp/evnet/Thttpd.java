@@ -15,12 +15,14 @@ public abstract class Thttpd implements Observer, Connection.Handler{
     protected ServerSocketChannel acceptor = null;
     protected Observer listener = null;
     protected EventLoop loop = null;
+    protected int timeout = 0xFFFF;
     protected int port = 0;
     protected int num = 0;
 
     public Thttpd(int thread, int timeout, int port){
         clients = new HashMap<SelectableChannel,Connection>();
-        this.loop = new EventLoop(Math.max(1,thread),timeout);
+        this.loop = new EventLoop(Math.max(1,thread),50000);
+        this.timeout = Math.max(this.timeout,timeout);
         this.port = port;
     }
 
@@ -32,7 +34,7 @@ public abstract class Thttpd implements Observer, Connection.Handler{
             return;
         }
         socket.configureBlocking(false);
-        conn = new Connection(loop,socket,this);
+        conn = new Connection(loop,socket,this, this.timeout);
         clients.put(socket,conn);
         num++;
         Logger.log("[THttpD] Conn("+conn.iID+") accepted, num="+num+" success");

@@ -13,7 +13,7 @@ public class Connection implements Observer{
     private static final int FLG_SEND_ENABLED =  (0x02);
     private final static int BUFFER_SIZE = 10240;
     public SelectableChannel socket = null;
-    private static final int TIMEOUT = 30*1000;
+    private int timeout = 0;
     private EventLoop loop = null;
     private Handler handler = null;
     private List<ByteBuffer> sendQueue = null;
@@ -22,15 +22,16 @@ public class Connection implements Observer{
     private Object usr = null;
     private int flag = 0;
 
-    public Connection(EventLoop loop, SelectableChannel fd, Handler handler){
+    public Connection(EventLoop loop, SelectableChannel fd, Handler handler, int timeout){
         this.handler = handler;
         this.loop = loop;
         this.socket = fd;
+        this.timeout = timeout;
         loop.eventAdd(socket, NIOEvent.AE_READ, this,socket);
         this.flag |= FLG_RECV_ENABLED;
         sendQueue = new LinkedList<ByteBuffer>();
         iID = iIDSeed++;
-        loop.setTimer(iID,TIMEOUT,null,this);
+        loop.setTimer(iID,timeout,null,this);
     }
 
     public void setUsr(Object usr){
@@ -54,7 +55,7 @@ public class Connection implements Observer{
             return;
         }
         buffer.flip();
-        loop.setTimer(iID,TIMEOUT,null,this);
+        loop.setTimer(iID,timeout,null,this);
         Logger.log("[Connection] Conn("+iID+") "+r+"bytes received");
         handler.processBuffer(this,buffer);
         buffer.clear();
@@ -82,7 +83,7 @@ public class Connection implements Observer{
             close(0);
             return;
         }
-        loop.setTimer(iID,TIMEOUT,null,this);
+        loop.setTimer(iID,timeout,null,this);
         if(sendQueue.size()==0){
             loop.eventDel(socket, NIOEvent.AE_WRITE);
             this.flag &=~FLG_SEND_ENABLED;

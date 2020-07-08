@@ -103,7 +103,7 @@ public class TestServer extends Thttpd {
 
     public static void main(String[] args){
         try {
-            new TestServer(4, 50000,8188).run();
+            new TestServer(4, 45000,8188).run();
         }catch (Exception e){
             e.printStackTrace();
         }

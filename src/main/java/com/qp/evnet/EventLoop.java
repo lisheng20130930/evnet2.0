@@ -15,14 +15,14 @@ public class EventLoop {
     private Signal signal = null;
     private EvPipe pipe = null;
     private BackEnd backEnd = null;
-    private int _timeout = 500;
-    private int _nthread = 2;
+    private int timeout = 500;
+    private int nthread = 2;
 
     public EventLoop(int nthread, int timeout){
-        this._nthread = Math.max(_nthread,nthread);
-        this._timeout = Math.max(_timeout,timeout);
+        this.nthread = Math.max(this.nthread,nthread);
+        this.timeout = Math.max(this.timeout,timeout);
         events = new HashMap<SelectableChannel, NIOEvent>();
-        pool = Executors.newFixedThreadPool(_nthread);
+        pool = Executors.newFixedThreadPool(this.nthread);
         finished = new LinkedList<EvActor>();
         timers = new HashMap<Long,Timer>();
         backEnd = new BackEnd();
@@ -67,7 +67,7 @@ public class EventLoop {
     }
 
     private long nearestMillionSeconds(){
-        long milliseconds = _timeout;
+        long milliseconds = timeout;
         Timer nearest = null;
         for(Timer timer : timers.values()){
             if (nearest==null || timer.when_ms < nearest.when_ms) {
@@ -77,7 +77,7 @@ public class EventLoop {
         if(nearest!=null){
             long now = System.currentTimeMillis();
             if(nearest.when_ms>now){
-                milliseconds = Math.min(nearest.when_ms-now,_timeout);
+                milliseconds = Math.min(nearest.when_ms-now,timeout);
             }
         }
         Logger.log("[EventLoop] Select milliseconds="+milliseconds);
