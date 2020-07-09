@@ -13,7 +13,7 @@ public abstract class Thttpd implements Observer, Connection.Handler{
     protected final int MAX_CNN = 8000; /* max conn count */
     protected Map<SelectableChannel, Connection> clients = null;
     protected ServerSocketChannel acceptor = null;
-    protected Observer listener = null;
+    protected WsHandler wsHandler = null;
     protected EventLoop loop = null;
     protected int timeout = 0xFFFF;
     protected int port = 0;
@@ -40,7 +40,7 @@ public abstract class Thttpd implements Observer, Connection.Handler{
         Logger.log("[THttpD] Conn("+conn.iID+") accepted, num="+num+" success");
     }
 
-    private THandler newHttpReq(Connection conn){
+    private HttpReq newHttpReq(Connection conn){
         return new HttpReq(conn,new HttpReq.Delegate(){
             @Override
             public void reqReady(HttpReq req) {
@@ -75,13 +75,13 @@ public abstract class Thttpd implements Observer, Connection.Handler{
         return r;
     }
 
-    protected boolean upgradeWsChannel(HttpReq req){
-        WsParser wsParser = new WsParser(req.getConn(), new WsParser.Delegate() {
+    private WsParser newWsParser(Connection conn){
+        return new WsParser(conn, new WsParser.Delegate() {
             @Override
             public boolean onWsFrame(Connection conn, WsParser.WsFrame frame) {
                 boolean r = false;
                 if(frame.frameType== WsParser.WsFrame.WS_TEXT_FRAME) {
-                    r = onWsMessage(conn,
+                    r = wsHandler.onWsMessage(conn,
                             new String(frame.payLoad.array(),frame.payLoad.position(),frame.payLoad.limit()));
                 }else{
                     r = onWsFrameDefault(conn,frame);
@@ -89,6 +89,14 @@ public abstract class Thttpd implements Observer, Connection.Handler{
                 return r;
             }
         });
+    }
+
+    protected boolean upgradeWsChannel(HttpReq req){
+        if(null==wsHandler){
+            Logger.log("[THttpD] wsHandler is not registered");
+            return false;
+        }
+        WsParser wsParser = newWsParser(req.getConn());
         String rsp = wsParser.prepare(req.getHeaders());
         if(null==rsp){
             rsp = wsParser.upgrade();
@@ -104,12 +112,17 @@ public abstract class Thttpd implements Observer, Connection.Handler{
 
     public void processBuffer(Connection conn, ByteBuffer buffer) {
         Logger.log("[THttpD] DATA Received===>size="+buffer.limit());
-        THandler p = (THandler)conn.getUsr();
+        Object p = conn.getUsr();
         if(null == p){
             p = newHttpReq(conn);
             conn.setUsr(p);
         }
-        int r = p.handle(buffer);
+        int r = 0;
+        if(p instanceof WsParser) {
+            r = ((WsParser)p).handle(buffer);
+        }else{
+            r = ((HttpReq)p).handle(buffer);
+        }
         if(r != buffer.limit()){
             conn.close(-1);
         }
@@ -152,10 +165,6 @@ public abstract class Thttpd implements Observer, Connection.Handler{
             if(Signal.sig==Signal.SIG_EXIT){
                 Logger.log("[THttpD] SIG_EXIT caught...");
                 break;
-            }else if(Signal.sig==Signal.SIG_HUP){
-                Logger.log("[THttpD] SIG_HUP....");
-                onHup();
-                Signal.sig = 0;
             }
             loop.processEvents();
         }
@@ -165,22 +174,15 @@ public abstract class Thttpd implements Observer, Connection.Handler{
         System.exit(0);
     }
 
-    protected abstract void handle(HttpReq req);
-
-    protected boolean onWsMessage(Connection conn, String message){
-        return true;
-    }
-
-    protected void onHup(){
-        return;
-    }
-
     protected boolean sendWsMessage(Connection conn, String message){
-        WsParser.WsFrame rsp = new WsParser.WsFrame(WsParser.WsFrame.WS_TEXT_FRAME, ByteBuffer.wrap(message.getBytes()));
+        WsParser.WsFrame rsp = new WsParser.WsFrame(WsParser.WsFrame.WS_TEXT_FRAME,
+                ByteBuffer.wrap(message.getBytes()));
         return conn.sendBuffer(rsp.toByteBuffer().array());
     }
 
-    public interface THandler{
-        int handle(ByteBuffer buffer);
+    protected abstract void handle(HttpReq req);
+
+    public interface WsHandler{
+        boolean onWsMessage(Connection conn, String message);
     }
 }

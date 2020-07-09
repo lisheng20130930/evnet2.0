@@ -9,9 +9,13 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestServer extends Thttpd {
+public class TestServer extends Thttpd implements Thttpd.WsHandler {
     public TestServer(int thread, int timeout, int port) {
         super(thread, timeout, port);
+        this.wsHandler = this;
+        // ADD YOUR CODE HERE
+        // eG. REG TO CENTER provider OR consumer
+        // eG. SUB MODULE API-GATEWAY FOR EXAMPLE
     }
 
     private void business(Map<String,Object> rsp, JSONObject pReq){
@@ -85,7 +89,7 @@ public class TestServer extends Thttpd {
 
     @Override
     public void onClosing(Connection conn, int code) {
-        THandler p = (THandler) conn.getUsr();
+        Object p = conn.getUsr();
         if (p != null && p instanceof WsParser) {
             ((WsParser)p).clear();
             conn.setUsr(null);
@@ -95,10 +99,10 @@ public class TestServer extends Thttpd {
     }
 
     @Override
-    protected boolean onWsMessage(Connection conn, String message){
+    public boolean onWsMessage(Connection conn, String message){
         Logger.log("[TestServer] WebSocket onWsMessage==>"+message);
         sendWsMessage(conn,"{\"janus\":\"ack\"}");
-        return super.onWsMessage(conn,message);
+        return true;
     }
 
     public static void main(String[] args){

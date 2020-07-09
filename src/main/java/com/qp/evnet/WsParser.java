@@ -6,7 +6,7 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WsParser implements Thttpd.THandler {
+public class WsParser{
     private static final int BUFFER_SIZE = 256;
     private ByteBuffer gBuffer = null;
     private Delegate delegate = null;
@@ -133,7 +133,6 @@ public class WsParser implements Thttpd.THandler {
         return true;
     }
 
-    @Override
     public int handle(ByteBuffer buffer){
         int size = buffer.limit();
         if(!append2Buffer(buffer)){
