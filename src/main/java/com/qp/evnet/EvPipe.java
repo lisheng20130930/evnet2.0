@@ -70,6 +70,7 @@ public class EvPipe{
         try {
             sinkChannel.close();
             sourceChannel.close();
+            pipe = null;
         }catch (Exception e){
             Logger.log("[EvPipe] ==>"+e.getMessage());
         }
