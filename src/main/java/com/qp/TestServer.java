@@ -10,8 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestServer extends Thttpd implements Thttpd.WsHandler {
-    public TestServer(int thread, int timeout, int port) {
-        super(thread, timeout, port);
+    public static final int CONNECTION_TIMEOUT = 50000;
+    public static final int PORT = 28000;
+
+    public TestServer(EventLoop loop) {
+        super(loop,CONNECTION_TIMEOUT,PORT);
         this.wsHandler = this;
         // ADD YOUR CODE HERE
         // eG. REG TO CENTER provider OR consumer
@@ -106,10 +109,18 @@ public class TestServer extends Thttpd implements Thttpd.WsHandler {
     }
 
     public static void main(String[] args){
-        try {
-            new TestServer(4, 45000,8188).run();
-        }catch (Exception e){
-            e.printStackTrace();
+        EventLoop loop = new EventLoop(8,50000);
+        TestServer web = new TestServer(loop);
+        if(web.start()){
+            while (true) {
+                if(loop.sig_exit()){
+                    Logger.log("SIG_EXIT caught...");
+                    break;
+                }
+                loop.processEvents();
+            }
+            web.stop();
         }
+        System.exit(0);
     }
 }

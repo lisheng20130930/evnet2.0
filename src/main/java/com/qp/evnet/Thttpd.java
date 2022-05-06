@@ -11,18 +11,18 @@ import java.util.Map;
 
 public abstract class Thttpd implements Observer, Connection.Handler{
     protected final int MAX_CNN = 8000; /* max conn count */
-    protected Map<SelectableChannel, Connection> clients = null;
+    protected Map<SelectableChannel, Connection> clients;
     protected ServerSocketChannel acceptor = null;
     protected WsHandler wsHandler = null;
-    protected EventLoop loop = null;
+    protected EventLoop loop;
     protected int timeout = 0xFFFF;
-    protected int port = 0;
+    protected int port;
     protected int num = 0;
 
-    public Thttpd(int thread, int timeout, int port){
-        clients = new HashMap<SelectableChannel,Connection>();
-        this.loop = new EventLoop(Math.max(1,thread),50000);
+    public Thttpd(EventLoop loop, int timeout, int port){
         this.timeout = Math.max(this.timeout,timeout);
+        this.clients = new HashMap<>();
+        this.loop = loop;
         this.port = port;
     }
 
@@ -82,7 +82,9 @@ public abstract class Thttpd implements Observer, Connection.Handler{
                 boolean r = false;
                 if(frame.frameType== WsParser.WsFrame.WS_TEXT_FRAME) {
                     r = wsHandler.onWsMessage(conn,
-                            new String(frame.payLoad.array(),frame.payLoad.position(),frame.payLoad.limit()));
+                            new String(frame.payLoad.array(),
+                                    frame.payLoad.position(),
+                                    frame.payLoad.limit()-frame.payLoad.position()));
                 }else{
                     r = onWsFrameDefault(conn,frame);
                 }
@@ -117,7 +119,7 @@ public abstract class Thttpd implements Observer, Connection.Handler{
             p = newHttpReq(conn);
             conn.setUsr(p);
         }
-        int r = 0;
+        int r;
         if(p instanceof WsParser) {
             r = ((WsParser)p).handle(buffer);
         }else{
@@ -154,24 +156,25 @@ public abstract class Thttpd implements Observer, Connection.Handler{
         }
     }
 
-    public void run() throws Exception{
-        acceptor = ServerSocketChannel.open();
-        acceptor.configureBlocking(false);
-        InetSocketAddress address = new InetSocketAddress(port);
-        acceptor.socket().bind(address);
-        loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this,acceptor);
-        Logger.log("[THttpD] server started. port="+port+".....");
-        while (true) {
-            if(Signal.sig==Signal.SIG_EXIT){
-                Logger.log("[THttpD] SIG_EXIT caught...");
-                break;
-            }
-            loop.processEvents();
+    public boolean start(){
+        try {
+            acceptor = ServerSocketChannel.open();
+            acceptor.configureBlocking(false);
+            InetSocketAddress address = new InetSocketAddress(port);
+            acceptor.socket().bind(address);
+            loop.eventAdd(acceptor, NIOEvent.AE_ACCEPT, this, acceptor);
+            Logger.log("[THttpD] server started. port="+port+".....");
+            return true;
+        }catch (Exception e){
+            Logger.log(e.getMessage());
         }
-        loop.eventDel(acceptor,NIOEvent.AE_ACCEPT);
+        return false;
+    }
+
+    public void stop(){
+        loop.eventDel(acceptor, NIOEvent.AE_ACCEPT);
         loop.clear();
         Logger.log("[THttpD] server stopped....");
-        System.exit(0);
     }
 
     protected boolean sendWsMessage(Connection conn, String message){

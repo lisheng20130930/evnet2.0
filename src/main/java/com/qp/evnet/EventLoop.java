@@ -234,4 +234,8 @@ public class EventLoop {
             timer.clear();
         }
     }
+
+    public boolean sig_exit() {
+        return (Signal.sig== Signal.SIG_EXIT);
+    }
 }

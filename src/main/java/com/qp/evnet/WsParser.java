@@ -108,9 +108,9 @@ public class WsParser{
             }
             int size = (Integer)map.get("size");
             ByteBuffer tmp = gBuffer;
-            gBuffer = ByteBuffer.allocate(gBuffer.position());
+            gBuffer = ByteBuffer.allocate(Math.max(BUFFER_SIZE,tmp.position()-size));
             if(tmp.position()-size>0) {
-                gBuffer.put(tmp.array(), size, tmp.position() - size);
+                gBuffer.put(tmp.array(), size, tmp.position()-size);
             }
             r = delegate.onWsFrame(conn,frame);
             if(!r){
@@ -120,7 +120,7 @@ public class WsParser{
         return r;
     }
 
-    private boolean append2Buffer(ByteBuffer buffer) {
+    private boolean cat_buffer(ByteBuffer buffer) {
         int len = buffer.limit()-buffer.position();
         int pos = buffer.position();
         if(gBuffer.position()+len>gBuffer.limit()){
@@ -135,12 +135,10 @@ public class WsParser{
 
     public int handle(ByteBuffer buffer){
         int size = buffer.limit();
-        if(!append2Buffer(buffer)){
-            Logger.log("[WsParser] append to buffer Error");
+        if(!cat_buffer(buffer)){
             return 0;
         }
         if(!processWsFrame()){
-            Logger.log("[WsParser] processWsFrame Error");
             return 0;
         }
         return size;
@@ -161,20 +159,20 @@ public class WsParser{
             }
             rsp+="Sec-WebSocket-Accept: "+szKey+"\r\n\r\n";
         } catch (Exception e) {
-            Logger.log("[WsParser] error==>"+e.getMessage());
+            e.printStackTrace();
         }
         return rsp;
     }
 
     public String prepare(HashMap<String, String> headers) {
-        this.host = headers.get("Host");
-        this.key = headers.get("Sec-WebSocket-Key");
-        this.protocol = headers.get("Sec-WebSocket-Protocol");
-        this.version = headers.get("Sec-WebSocket-Version");
-        Logger.log("[WsParser] prepared==>host="+host+",key="+key+",protocol="+protocol+",version="+version);
+        this.host = headers.get("host");
+        this.key = headers.get("sec-websocket-key");
+        this.protocol = headers.get("sec-websocket-protocol");
+        this.version = headers.get("sec-websocket-version");
+        System.out.println("[WsParser] prepared==>host="+host+",key="+key+",protocol="+protocol+",version="+version);
         String rsp = null;
         if(!this.version.equals("13")){
-            Logger.log("[WsParser] now we only support version 13");
+            System.out.println("[WsParser] now we only support version 13");
             rsp = "HTTP/1.1 400 Bad Request\r\nSec-WebSocket-Version: 13\r\n\r\n";
         }
         return rsp;

@@ -2,6 +2,7 @@ package com.qp.evnet;
 
 import com.qp.utils.Logger;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SocketChannel;
@@ -17,7 +18,6 @@ public class Connection implements Observer{
     private EventLoop loop = null;
     private Handler handler = null;
     private List<ByteBuffer> sendQueue = null;
-    private static long iIDSeed = 0;
     public long iID = 0;
     private Object usr = null;
     private int flag = 0;
@@ -30,7 +30,7 @@ public class Connection implements Observer{
         loop.eventAdd(socket, NIOEvent.AE_READ, this,socket);
         this.flag |= FLG_RECV_ENABLED;
         sendQueue = new LinkedList<ByteBuffer>();
-        iID = iIDSeed++;
+        iID = System.currentTimeMillis();
         loop.setTimer(iID,timeout,null,this);
     }
 
@@ -44,7 +44,7 @@ public class Connection implements Observer{
 
     public void onReadAble() {
         ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-        int r = 0;
+        int r = (-1);
         try {
             r = ((SocketChannel) socket).read(buffer);
         }catch (Exception e){
@@ -63,7 +63,7 @@ public class Connection implements Observer{
 
     public void onWriteAble() {
         ByteBuffer buffer = sendQueue.get(0);
-        int r = 0;
+        int r = (-1);
         try {
             r = ((SocketChannel) socket).write(buffer);
         }catch (Exception e){
@@ -96,7 +96,9 @@ public class Connection implements Observer{
                 onReadAble();
             }
             if ((mask & NIOEvent.AE_WRITE) != 0) {
-                onWriteAble();
+                if(socket!=null) {
+                    onWriteAble();
+                }
             }
         }else{
             Logger.log("[Connection] Conn("+iID+") expired");
@@ -133,6 +135,17 @@ public class Connection implements Observer{
             }
             socket = null;
         }
+    }
+
+    public String getIp() {
+        try{
+            SocketChannel socketChannel = (SocketChannel)socket;
+            InetSocketAddress address = (InetSocketAddress)socketChannel.getRemoteAddress();
+            return address.getAddress().getHostAddress();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void clear(){
