@@ -50,13 +50,13 @@ public class Connection implements Observer{
         }catch (Exception e){
             Logger.log("[Connection] ==>"+e.getMessage());
         }
-        if (r <= 0) {
+        if (r < 0) {
             close(0);
             return;
         }
         buffer.flip();
         loop.setTimer(iID,timeout,null,this);
-        Logger.log("[Connection] Conn("+iID+") "+r+"bytes received");
+        //Logger.log("[Connection] Conn("+iID+") "+r+"bytes received");
         handler.processBuffer(this,buffer);
         buffer.clear();
     }
@@ -66,27 +66,27 @@ public class Connection implements Observer{
         int r = (-1);
         try {
             r = ((SocketChannel) socket).write(buffer);
-        }catch (Exception e){
-            Logger.log("[Connection] ==>"+e.getMessage());
+        } catch (Exception e) {
+            Logger.log("[Connection] ==>" + e.getMessage());
         }
-        if(r<=0){
+        if (r <= 0) {
             close(0);
             return;
         }
-        if(buffer.position()==buffer.limit()){
+        if (buffer.position() == buffer.limit()) {
             sendQueue.remove(0);
             buffer.clear();
         }
-        Logger.log("[Connection] Conn("+iID+") "+r+"bytes send complete");
+        //Logger.log("[Connection] Conn("+iID+") "+r+"bytes send complete");
         r = this.handler.onSendComplete(this);
-        if(r!=0){
+        if (r != 0) {
             close(0);
             return;
         }
-        loop.setTimer(iID,timeout,null,this);
-        if(sendQueue.size()==0){
+        loop.setTimer(iID, timeout, null, this);
+        if (sendQueue.size() == 0) {
             loop.eventDel(socket, NIOEvent.AE_WRITE);
-            this.flag &=~FLG_SEND_ENABLED;
+            this.flag &= ~FLG_SEND_ENABLED;
         }
     }
 
